@@ -54,6 +54,9 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	private long modificationCount = 0;
 
 	/** Keeps count of elements that are currently in collection. */
+	private int occupied;
+	
+	/** Size of internal array*/
 	private int size;
 
 	/** Used array for collection memory */
@@ -72,6 +75,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 		checkValidity(initialCapacity, collection);
 		initializeSize(initialCapacity, collection);
 		elements = (T[]) new Object[size];
+		occupied = collection.size();
 		copyCollectionToElements(collection);
 	}
 
@@ -85,6 +89,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	public ArrayIndexedCollection(int initialCapacity) {
 		checkValidityInitialCapacity(initialCapacity);
 		size = initialCapacity;
+		occupied = 0;
 		elements = (T[]) new Object[size];
 	}
 
@@ -246,6 +251,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	public void add(T value) {
 		boolean added = false;
 		checkIfValueIsNull(value);
+		occupied++;
 		for (int i = 0; i < size; i++) {
 			if (elements[i] == null) {
 				elements[i] = value;
@@ -288,7 +294,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	 */
 	@Override
 	public int size() {
-		return size;
+		return occupied;
 	}
 
 	/**
@@ -298,6 +304,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	 *
 	 */
 	public void clear() {
+		occupied = 0;
 		for (int i = 0; i < size; i++) {
 			elements[i] = null;
 		}
@@ -317,6 +324,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	public void insert(T value, int position) {
 		checkIndexOutOfBounds(position);
 		checkIfValueIsNull(value);
+		occupied++;
 		if (elements[size - 1] == null) {
 			shiftElelemnts(position);
 		} else {
@@ -352,6 +360,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 	 */
 	public void remove(int index) {
 		checkIndexOutOfBounds(index);
+		occupied--;
 		for (int i = index; i < size - 1; i++) {
 			elements[i] = elements[i + 1];
 		}
@@ -377,6 +386,7 @@ public class ArrayIndexedCollection<T> implements List<T> {
 			if (elements[i].equals(value)) {
 				remove(i);
 				isremoved = true;
+				occupied--;
 			}
 		}
 		return isremoved;

@@ -61,7 +61,7 @@ public interface Collection<T> {
 	 * 
 	 * @param processor
 	 */
-	default void forEach(Processor<T> processor) {
+	default void forEach(Processor<? super T> processor) {
 		ElementsGetter<T> elementsGetter = createElementsGetter();
 		while (elementsGetter.hasNextElement()) {
 			processor.process(elementsGetter.getNextElement());
@@ -73,7 +73,7 @@ public interface Collection<T> {
 	 * 
 	 * @param other
 	 */
-	default public void addAll(Collection<T> other) {
+	default public void addAll(Collection<? extends T> other) {
 		class ConcreteProcessor implements Processor<T> {
 			public void process(T value) {
 				add(value);
@@ -101,8 +101,8 @@ public interface Collection<T> {
 	 * @param col as source of elements
 	 * @param tester to accept elements
 	 */
-	default void addAllSatisfying(Collection<T> col, Tester<T> tester) {
-		ElementsGetter<T> elementsGetter = col.createElementsGetter();
+	default void addAllSatisfying(Collection<? extends T> col, Tester<? super T> tester) {
+		ElementsGetter<T> elementsGetter = (ElementsGetter<T>) col.createElementsGetter();
 		LinkedListIndexedCollection<T> acceptedElements = new LinkedListIndexedCollection<T>();
 
 		while (elementsGetter.hasNextElement()) {
